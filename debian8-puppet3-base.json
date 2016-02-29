@@ -13,101 +13,93 @@
   "push": {
     "name": "{{user `atlas_username`}}/{{user `box_name`}}"
   },
-  "provisioners": [
-    {
-      "type": "shell",
-      "scripts": [
-        "scripts/base.sh",
-        "scripts/virtualbox.sh",
-        "scripts/vmware.sh",
-        "scripts/vagrant.sh",
-        "scripts/puppet3.sh",
-        "scripts/grub.sh",
-        "scripts/network.sh",
-        "scripts/systemd.sh",
-        "scripts/zerodisk.sh",
-        "scripts/cleanup.sh"
-      ],
-      "override": {
-        "virtualbox-iso": {
-          "execute_command": "echo 'vagrant'|sudo -S bash '{{.Path}}'"
-        }
+  "provisioners": [{
+    "type": "shell",
+    "scripts": [
+      "scripts/base.sh",
+      "scripts/virtualbox.sh",
+      "scripts/vmware.sh",
+      "scripts/vagrant.sh",
+      "scripts/puppet3.sh",
+      "scripts/grub.sh",
+      "scripts/network.sh",
+      "scripts/zerodisk.sh",
+      "scripts/cleanup.sh"
+    ],
+    "override": {
+      "virtualbox-iso": {
+        "execute_command": "echo 'vagrant'|sudo -S bash '{{.Path}}'"
       }
     }
-  ],
-  "builders": [
-    {
-      "type": "virtualbox-iso",
-      "boot_command": [
-        "<esc><wait>",
-        "install <wait>",
-        "preseed/url=http://{{ .HTTPIP }}:{{ .HTTPPort }}/preseed-debian8.cfg <wait>",
-        "debian-installer=en_US <wait>",
-        "auto <wait>",
-        "locale=en_US <wait>",
-        "kbd-chooser/method=us <wait>",
-        "netcfg/get_hostname={{ .Name }} <wait>",
-        "netcfg/get_domain=vagrantup.com <wait>",
-        "fb=false <wait>",
-        "debconf/frontend=noninteractive <wait>",
-        "console-setup/ask_detect=false <wait>",
-        "console-keymaps-at/keymap=us <wait>",
-        "keyboard-configuration/xkb-keymap=us <wait>",
-        "<enter><wait>"
+  }],
+  "builders": [{
+    "type": "virtualbox-iso",
+    "boot_command": [
+      "<esc><wait>",
+      "install <wait>",
+      "preseed/url=http://{{ .HTTPIP }}:{{ .HTTPPort }}/preseed-debian7.cfg <wait>",
+      "debian-installer=en_US <wait>",
+      "auto <wait>",
+      "locale=en_US <wait>",
+      "kbd-chooser/method=us <wait>",
+      "netcfg/get_hostname={{ .Name }} <wait>",
+      "netcfg/get_domain=vagrantup.com <wait>",
+      "fb=false <wait>",
+      "debconf/frontend=noninteractive <wait>",
+      "console-setup/ask_detect=false <wait>",
+      "console-keymaps-at/keymap=us <wait>",
+      "keyboard-configuration/xkb-keymap=us <wait>",
+      "<enter><wait>"
+    ],
+    "headless": true,
+    "boot_wait": "10s",
+    "disk_size": 20480,
+    "guest_os_type": "Debian_64",
+    "http_directory": "http",
+    "iso_checksum": "{{user `debian_iso_checksum`}}",
+    "iso_checksum_type": "md5",
+    "iso_url": "http://cdimage.debian.org/cdimage/{{user `debian_version_dir`}}/{{user `debian_version`}}/{{user `debian_arch_dir`}}/debian-{{user `debian_version`}}-amd64-netinst.iso",
+    "ssh_username": "vagrant",
+    "ssh_password": "vagrant",
+    "ssh_port": 22,
+    "ssh_wait_timeout": "10000s",
+    "shutdown_command": "echo '/sbin/halt -h -p' > shutdown.sh; echo 'vagrant'|sudo -S bash 'shutdown.sh'",
+    "guest_additions_url": "http://download.virtualbox.org/virtualbox/{{user `virtualbox_guest_additions_version`}}/VBoxGuestAdditions_{{user `virtualbox_guest_additions_version`}}.iso",
+    "guest_additions_sha256": "{{user `virtualbox_guest_additions_checksum`}}",
+    "virtualbox_version_file": ".vbox_version",
+    "vboxmanage": [
+      [
+        "modifyvm",
+        "{{.Name}}",
+        "--memory",
+        "256"
       ],
-      "headless": true,
-      "boot_wait": "10s",
-      "disk_size": 20480,
-      "guest_os_type": "Debian_64",
-      "http_directory": "http",
-      "iso_checksum": "{{user `debian_iso_checksum`}}",
-      "iso_checksum_type": "md5",
-      "iso_url": "http://cdimage.debian.org/cdimage/{{user `debian_version_dir`}}/{{user `debian_arch_dir`}}/debian-{{user `debian_version`}}-amd64-netinst.iso",
-      "ssh_username": "vagrant",
-      "ssh_password": "vagrant",
-      "ssh_port": 22,
-      "ssh_wait_timeout": "10000s",
-      "shutdown_command": "echo '/sbin/halt -h -p' > shutdown.sh; echo 'vagrant'|sudo -S bash 'shutdown.sh'",
-      "guest_additions_url": "http://download.virtualbox.org/virtualbox/{{user `virtualbox_guest_additions_version`}}/VBoxGuestAdditions_{{user `virtualbox_guest_additions_version`}}.iso",
-      "guest_additions_sha256": "{{user `virtualbox_guest_additions_checksum`}}",
-      "virtualbox_version_file": ".vbox_version",
-      "vboxmanage": [
-        [
-          "modifyvm",
-          "{{.Name}}",
-          "--memory",
-          "256"
-        ],
-        [
-          "modifyvm",
-          "{{.Name}}",
-          "--cpus",
-          "1"
-        ]
+      [
+        "modifyvm",
+        "{{.Name}}",
+        "--cpus",
+        "1"
       ]
+    ]
+  }],
+  "post-processors": [{
+    "type": "vagrant",
+    "only": [
+      "virtualbox-iso",
+      "vmware-iso"
+    ],
+    "keep_input_artifact": false
+  }, {
+    "type": "atlas",
+    "only": [
+      "virtualbox-iso"
+    ],
+    "artifact": "{{user `atlas_username`}}/{{user `box_name`}}",
+    "artifact_type": "vagrant.box",
+    "metadata": {
+      "provider": "virtualbox",
+      "version": "{{user `box_version`}}",
+      "created_at": "{{timestamp}}"
     }
-  ],
-  "post-processors": [
-    [{
-      "type": "vagrant",
-      "only": [
-        "virtualbox-iso",
-        "vmware-iso"
-      ],
-      "keep_input_artifact": false
-    },
-    {
-      "type": "atlas",
-      "only": [
-        "virtualbox-iso"
-      ],
-      "artifact": "{{user `atlas_username`}}/{{user `box_name`}}",
-      "artifact_type": "vagrant.box",
-      "metadata": {
-        "provider": "virtualbox",
-        "version": "{{user `box_version`}}",
-        "created_at": "{{timestamp}}"
-      }
-    }
-  ]
+  }]
 }

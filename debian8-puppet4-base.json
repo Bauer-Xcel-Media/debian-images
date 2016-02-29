@@ -82,23 +82,25 @@
       ]
     ]
   }],
-  "post-processors": [{
-    "type": "vagrant",
-    "only": [
-      "virtualbox-iso"
-    ],
-    "keep_input_artifact": false
-  }, {
-    "type": "atlas",
-    "only": [
-      "virtualbox-iso"
-    ],
-    "artifact": "{{user `atlas_username`}}/{{user `box_name`}}",
-    "artifact_type": "vagrant.box",
-    "metadata": {
-      "provider": "virtualbox",
-      "version": "{{user `box_version`}}",
-      "created_at": "{{timestamp}}"
-    }
-  }]
+  "post-processors": [
+    [{
+      "type": "vagrant",
+      "only": [
+        "virtualbox-iso"
+      ],
+      "keep_input_artifact": false
+    }, {
+      "type": "atlas",
+      "only": [
+        "virtualbox-iso"
+      ],
+      "artifact": "{{user `atlas_username`}}/{{user `box_name`}}",
+      "artifact_type": "vagrant.box",
+      "metadata": {
+        "provider": "virtualbox",
+        "version": "{{user `box_version`}}",
+        "created_at": "{{timestamp}}"
+      }
+    }]
+  ]
 }

@@ -1,7 +1,7 @@
 {
   "variables": {
     "atlas_username": "BauerXcelMedia",
-    "box_version": "1.0.0",
+    "box_version": "1.0.1",
     "box_name": "debian7-puppet3-base",
     "debian_version": "7.9.0",
     "debian_iso_checksum": "774d1fc8c5364e63b22242c33a89c1a3",
@@ -82,23 +82,25 @@
       ]
     ]
   }],
-  "post-processors": [{
-    "type": "vagrant",
-    "only": [
-      "virtualbox-iso"
-    ],
-    "keep_input_artifact": false
-  }, {
-    "type": "atlas",
-    "only": [
-      "virtualbox-iso"
-    ],
-    "artifact": "{{user `atlas_username`}}/{{user `box_name`}}",
-    "artifact_type": "vagrant.box",
-    "metadata": {
-      "provider": "virtualbox",
-      "version": "{{user `box_version`}}",
-      "created_at": "{{timestamp}}"
-    }
-  }]
+  "post-processors": [
+    [{
+      "type": "vagrant",
+      "only": [
+        "virtualbox-iso"
+      ],
+      "keep_input_artifact": false
+    }, {
+      "type": "atlas",
+      "only": [
+        "virtualbox-iso"
+      ],
+      "artifact": "{{user `atlas_username`}}/{{user `box_name`}}",
+      "artifact_type": "vagrant.box",
+      "metadata": {
+        "provider": "virtualbox",
+        "version": "{{user `box_version`}}",
+        "created_at": "{{timestamp}}"
+      }
+    }]
+  ]
 }

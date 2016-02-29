@@ -85,8 +85,7 @@
   "post-processors": [{
     "type": "vagrant",
     "only": [
-      "virtualbox-iso",
-      "vmware-iso"
+      "virtualbox-iso"
     ],
     "keep_input_artifact": false
   }, {

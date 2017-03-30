@@ -1,10 +1,10 @@
 {
   "variables": {
     "atlas_username": "BauerXcelMedia",
-    "box_version": "1.0.1",
+    "box_version": "1.0.2",
     "box_name": "debian7-puppet3-base",
-    "debian_version": "7.9.0",
-    "debian_iso_checksum": "774d1fc8c5364e63b22242c33a89c1a3",
+    "debian_version": "7.11.0",
+    "debian_iso_checksum": "096c1c18b44c269808bd815d58c53c8f",
     "debian_arch_dir": "amd64/iso-cd",
     "debian_version_dir": "archive",
     "virtualbox_guest_additions_version": "5.0.14",

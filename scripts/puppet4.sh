@@ -7,7 +7,7 @@ CODENAME=$(lsb_release -c | awk '{print $2}')
 wget http://apt.puppetlabs.com/puppetlabs-release-pc1-${CODENAME}.deb
 dpkg -i puppetlabs-release-pc1-${CODENAME}.deb
 apt-get -y update
-apt-get -y install puppet-agent
+apt-get -y install puppet-agent augeas-tools rubygems
 
 # puppet 4 has a new install localtion and its binaries are not in the path
 # so let´s add puppets new location to the PATH for everyone
